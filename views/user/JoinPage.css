@@ -1,0 +1,89 @@
+.JoinPage {
+  text-align: center;
+}
+a {
+  text-decoration: none;
+}
+.top_joinpage {
+  text-align: center;
+  font-size: x-large;
+  margin-top: 130px;
+}
+.top_joinpage #logo_joinpage {
+  color: #fab404;
+}
+.ID {
+  position: relative;
+  display: table;
+  text-align: middle;
+  margin: auto;
+  width: 504px;
+  height: 54px;
+  margin-top: 30px;
+}
+.ID #ID {
+  width: 75%;
+  height: 50px;
+  border: 2px solid #fab404;
+}
+.ID #ID_check {
+  margin-left: 2%;
+  width: 22%;
+  height: 50px;
+  background-color: #fab404;
+  color: white;
+  font-size: larger;
+  border: 2px solid #fab404;
+}
+.personal {
+  position: relative;
+  display: table;
+  text-align: middle;
+  margin: auto;
+  margin-top: 30px;
+}
+.personal #User_name {
+  position: relative;
+  width: 248px;
+  height: 50px;
+  border: 2px solid #fab404;
+}
+.personal #User_bityhday {
+  position: relative;
+  width: 248px;
+  height: 50px;
+  border: 2px solid #fab404;
+}
+#PW {
+  position: relative;
+  display: table;
+  text-align: middle;
+  margin: auto;
+  width: 500px;
+  height: 50px;
+  border: 2px solid #fab404;
+  margin-top: 30px;
+}
+#PW_check {
+  position: relative;
+  display: table;
+  text-align: middle;
+  margin: auto;
+  width: 500px;
+  height: 50px;
+  border: 2px solid #fab404;
+  margin-top: 30px;
+}
+#Join_btn {
+  position: relative;
+  display: table;
+  text-align: middle;
+  margin: auto;
+  width: 500px;
+  height: 50px;
+  border: 2px solid #fab404;
+  background-color: #fab404;
+  font-size: larger;
+  color: white;
+  margin-top: 30px;
+}
