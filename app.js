@@ -69,8 +69,11 @@ passportConfig(passport);
 
 // api router
 app.get("/", (req, res) => {
-  res.send("정상작동");
+  //var json = JSON.parse(JSON.stringify(req));
+  //res.send(res);
+  res.send("로그인 성공");
 });
+//app.use("/test", require("./routes/api/common/passport/localStrategy"));
 app.use("/api", require("./routes/api"));
 
 /** PORT LISTENING */

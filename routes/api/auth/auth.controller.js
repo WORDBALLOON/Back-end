@@ -79,7 +79,7 @@ exports.register = async (req, res, next) => {
 */
 
 exports.login = async (req, res, next) => {
-  res.send("login 라우터 작동중");
+  //res.send("login 라우터 작동중");
   console.log(req.body);
   passport.authenticate("local", (authError, user, info) => {
     if (authError) {
@@ -87,15 +87,21 @@ exports.login = async (req, res, next) => {
       return next(authError);
     }
     if (!user) {
-      req.flash("loginError", info.message);
+      //req.flash("loginError", info.message);
       return res.redirect("/");
     }
     return req.login(user, (loginError) => {
+      console.log("여기까지 오기는 하는걸까");
+      console.log(user);
+      //res.send(user); // 프론트로 user 정보 전달
       if (loginError) {
         console.error(loginError);
         return next(loginError);
       }
-      return res.redirect("/");
+      // 로그인 성공 시, 유저 데이터 프론트로 전송
+      var json = JSON.parse(JSON.stringify(user));
+      return res.send(json);
+      //return res.redirect("/");
     });
-  })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
+  })(req, res, next);
 };
