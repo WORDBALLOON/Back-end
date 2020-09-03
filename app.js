@@ -69,9 +69,9 @@ passportConfig(passport);
 
 // api router
 app.get("/", (req, res) => {
-  //var json = JSON.parse(JSON.stringify(req));
+  var json = JSON.parse(JSON.stringify(res));
   //res.send(res);
-  res.send("로그인 성공");
+  res.send(json);
 });
 //app.use("/test", require("./routes/api/common/passport/localStrategy"));
 app.use("/api", require("./routes/api"));

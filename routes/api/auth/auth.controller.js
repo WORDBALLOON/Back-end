@@ -34,10 +34,18 @@ exports.register = async (req, res, next) => {
     const exUser = await User.findOne({ where: { userid } });
     if (exUser) {
       console.log("이미 가입된 아이디입니다.");
-      return res.redirect("/register");
+      res.json({
+        status: 202,
+        success: false,
+        message: "이미 가입된 아이디임",
+      });
+      //return res.redirect("/register");
+      return;
     }
+    // 만약에 name이 0값이라면, 데이터 저장하지 말고 res.json({message : "사용가능아이디"})
 
     const hash = await bcrypt.hash(password, 12);
+
     await User.create({
       userid: userid,
       password: hash,
@@ -52,6 +60,7 @@ exports.register = async (req, res, next) => {
           success: false,
           message: "db 저장 실패",
         });
+        return;
       } else {
         console.log("저장성공");
         res.json({
@@ -59,6 +68,7 @@ exports.register = async (req, res, next) => {
           success: true,
           message: "db 저장 성공",
         });
+        return;
         // 전달해야할 것이 있을 때에는
         //console.log(result.dataValues);
       }
@@ -87,8 +97,12 @@ exports.login = async (req, res, next) => {
       return next(authError);
     }
     if (!user) {
+      // user 아니라면,
+      res.status(400).json({ message: info.message });
+      //res.send(info.message);
+      return;
       //req.flash("loginError", info.message);
-      return res.redirect("/");
+      //return res.redirect("/");
     }
     return req.login(user, (loginError) => {
       console.log("여기까지 오기는 하는걸까");
@@ -96,7 +110,9 @@ exports.login = async (req, res, next) => {
       //res.send(user); // 프론트로 user 정보 전달
       if (loginError) {
         console.error(loginError);
-        return next(loginError);
+        res.send(loginError);
+        return;
+        //return next(loginError);
       }
       // 로그인 성공 시, 유저 데이터 프론트로 전송
       var json = JSON.parse(JSON.stringify(user));
