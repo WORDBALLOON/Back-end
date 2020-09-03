@@ -26,57 +26,88 @@ exports.register = async (req, res, next) => {
   var password = req.body.password;
   var name = req.body.name;
   var birth = req.body.birth;
-
   console.log(userid);
   console.log(password);
-
-  try {
-    const exUser = await User.findOne({ where: { userid } });
-    if (exUser) {
-      console.log("이미 가입된 아이디입니다.");
+  // 중복확인
+  if (name == 0) {
+    const many = await User.findOne({ where: { userid } });
+    if (many) {
       res.json({
         status: 202,
         success: false,
-        message: "이미 가입된 아이디임",
+        message: "사용 불가능",
       });
-      //return res.redirect("/register");
+      //return res.redirect("/register");}
+      return;
+    } else {
+      res.json({
+        status: 202,
+        success: false,
+        message: "사용 가능",
+      });
       return;
     }
+  } else {
+    try {
+      const exUser = await User.findOne({ where: { userid } });
+      console.log(exUser);
+      /*
     // 만약에 name이 0값이라면, 데이터 저장하지 말고 res.json({message : "사용가능아이디"})
+    if (exUsername == 0) {
+      res.json({
+        status: 202,
+        success: false,
+        message: "사용 가능 아이디",
+      });
+      return;
+    }
+    */
 
-    const hash = await bcrypt.hash(password, 12);
-
-    await User.create({
-      userid: userid,
-      password: hash,
-      name: name,
-      birth: birth,
-      isadmin: 0,
-    }).then((result) => {
-      if (!result) {
-        console.log("저장 실패");
+      if (exUser) {
+        console.log("이미 가입된 아이디입니다.");
         res.json({
-          status: 500,
+          status: 202,
           success: false,
-          message: "db 저장 실패",
+          message: "이미 가입된 아이디임",
         });
+        //return res.redirect("/register");
         return;
-      } else {
-        console.log("저장성공");
-        res.json({
-          status: 200,
-          success: true,
-          message: "db 저장 성공",
-        });
-        return;
-        // 전달해야할 것이 있을 때에는
-        //console.log(result.dataValues);
       }
-    });
-    return res.redirect("/");
-  } catch (error) {
-    console.error(error);
-    return next(error);
+
+      const hash = await bcrypt.hash(password, 12);
+
+      await User.create({
+        userid: userid,
+        password: hash,
+        name: name,
+        birth: birth,
+        isadmin: 0,
+      }).then((result) => {
+        if (!result) {
+          console.log("저장 실패");
+          res.json({
+            status: 500,
+            success: false,
+            message: "db 저장 실패",
+          });
+          return;
+        } else {
+          console.log("저장성공");
+          res.json({
+            status: 200,
+            success: true,
+            message: "db 저장 성공",
+          });
+          return;
+          // 전달해야할 것이 있을 때에는
+          //console.log(result.dataValues);
+        }
+      });
+      return res.redirect("/");
+    } catch (error) {
+      console.error(error);
+      return next(error);
+    }
   }
 };
 
