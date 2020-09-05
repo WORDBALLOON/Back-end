@@ -41,8 +41,8 @@ exports.register = async (req, res, next) => {
       return;
     } else {
       res.json({
-        status: 202,
-        success: false,
+        status: 200,
+        success: true,
         message: "사용 가능",
       });
       return;
@@ -151,4 +151,26 @@ exports.login = async (req, res, next) => {
       //return res.redirect("/");
     });
   })(req, res, next);
+};
+
+exports.logout = async (req, res) => {
+  console.log("logout이 되었어");
+  req.logout();
+  req.session.destroy(function (err) {
+    if (err) {
+      res.json({
+        status: 400,
+        success: false,
+        message: "로그아웃 실패",
+      });
+      return;
+    }
+    res.json({
+      status: 200,
+      success: true,
+      message: "로그아웃 성공",
+    });
+    return;
+  });
+  //res.redirect("/");
 };
