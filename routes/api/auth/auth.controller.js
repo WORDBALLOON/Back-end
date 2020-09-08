@@ -2,7 +2,6 @@ const { User } = require("../../../models");
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-//const jwt = require("jsonwebtoken");
 
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 

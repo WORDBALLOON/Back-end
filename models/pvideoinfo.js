@@ -1,47 +1,52 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
-  var videoinfo = sequelize.define("videoinfo", {
-    videoid: {
+  var pvideoinfo = sequelize.define("pvideoinfo", {
+    pvideoid: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    categoryid: {
+    pcategoryid: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    pcategoryname: {
       type: DataTypes.STRING(8),
       allowNull: true,
     },
-    categoryname: {
-      type: DataTypes.STRING(8),
-      allowNull: false,
-    },
-    videotitle: {
+    pvideotitle: {
       type: DataTypes.STRING(45),
       allowNull: true,
     },
-    videolink: {
+    pvideolink: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },
-    thumbnail: {
+    pthumbnail: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },
     //수정할 수도 있음 : 파일 변환 가능
-    subtitle: {
+    psubtitle: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },
-    view: {
+    pview: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
-    videolike: {
+    pvideolike: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
-    sharurl: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
+    convertflag: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-  });
-  return videoinfo;
+  },
+    {
+      timestamps: false,
+      freezeTableName: true,
+    }
+  );
+  return pvideoinfo;
 };

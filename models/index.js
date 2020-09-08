@@ -16,5 +16,10 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.User = require("./userinfo")(sequelize, Sequelize);
+db.Pvideo = require("./pvideoinfo")(sequelize, Sequelize);
+db.Videokey = require("./videokey")(sequelize, Sequelize);
+
+db.Pvideo.hasMany(db.Videokey);
+db.Videokey.belongsTo(db.Pvideo);
 
 module.exports = db;
