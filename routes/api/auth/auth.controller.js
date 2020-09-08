@@ -29,7 +29,7 @@ exports.register = async (req, res, next) => {
   console.log(userid);
   console.log(password);
   // 중복확인
-  if (name == 0) {
+  if (name == "") {
     const many = await User.findOne({ where: { userid } });
     if (many) {
       res.json({
@@ -41,7 +41,7 @@ exports.register = async (req, res, next) => {
       return;
     } else {
       res.json({
-        status: 200,
+        status: 201,
         success: true,
         message: "사용 가능",
       });
@@ -129,7 +129,7 @@ exports.login = async (req, res, next) => {
     }
     if (!user) {
       // user 아니라면,
-      res.status(400).json({ message: info.message });
+      res.status(202).json({ message: info.message });
       //res.send(info.message);
       return;
       //req.flash("loginError", info.message);
