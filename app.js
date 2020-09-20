@@ -1,31 +1,3 @@
-/*app.js
-
-var createError = require("http-errors");
-var session = require("express-session");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan"); // 서버 발생 이벤트 기록
-require("dotenv").config();
-const passport = require("passport");
-app.use(logger("dev"));
-app.use(cookieParser(cookieParser(process.env.COOKIE_SECRET)));
-
-//passport 구현 시 필요
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(
-  session({
-    secret: process.env.COOKIE_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-    },
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-*/
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");

@@ -8,7 +8,7 @@ nlp = spacy.load('en_core_web_sm')
 
 filename = sys.argv[1]
 # 파일 불러오기
-real = "C:/Users/JANG/Desktop/wordballoon/server/upload/"+filename
+real = "./upload/"+filename
 ff = pd.read_csv(real)
 # C:\Users\JANG\Desktop\wordballoon\server\STT\Text_Rank
 
