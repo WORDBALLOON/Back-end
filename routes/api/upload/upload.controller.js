@@ -6,6 +6,7 @@ const fs = require("fs"); //파일 읽어옴
 const express = require("express");
 const multer = require("multer");
 var ffmpeg = require("fluent-ffmpeg");
+var iconv = require("iconv-lite");
 //const { PassThrough } = require("stream");
 
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
@@ -21,6 +22,7 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 */
 
 exports.video = async (req, res, next) => {
+  req.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
   // res.send("video 라우터 작동중");
   // submit 시, enctype="multipart/form-data"
 
@@ -252,8 +254,12 @@ exports.video = async (req, res, next) => {
           console.log("err msg : ", err);
         }
         console.log("result: " + results);
-        keyword = result;
+        //keyword = result;
+
+        // 한글 깨짐 방지 위해 utf-8디코딩
         keyword = results.join("/");
+        keyword = iconv.encode(keyword, "utf-8").toString();
+        console.log("인코딩후" + keyword);
 
         //db 접근
         //videoid
