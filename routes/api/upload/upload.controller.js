@@ -22,7 +22,6 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 */
 
 exports.video = async (req, res, next) => {
-  req.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
   // res.send("video 라우터 작동중");
   // submit 시, enctype="multipart/form-data"
 

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const auth = require("./auth");
 const upload = require("./upload");
-const admin = requrie("./admin");
+const admin = require("./admin");
 var express = require("express");
 var app = express();
 
