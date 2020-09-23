@@ -49,10 +49,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
+      uploader: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+      },
     },
     {
       timestamps: false,
       freezeTableName: true,
+      charset: "utf8",
+      collate: "utf8_general_ci",
     }
   );
   return pvideoinfo;

@@ -1,7 +1,7 @@
 const { User } = require("../../../models");
 const express = require("express");
 const passport = require("passport");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 
