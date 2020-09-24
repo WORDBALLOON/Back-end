@@ -6,24 +6,22 @@ const fs = require("fs"); //파일 읽어옴
 const express = require("express");
 const multer = require("multer");
 var ffmpeg = require("fluent-ffmpeg");
-var iconv = require("iconv-lite");
-//const { PassThrough } = require("stream");
 
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 
 // 업로드 기능
 /*
     POST /api/upload/
-    req 
+    req
     {
         videofile,
         inbucket : "ko-kr", "en-us",
-        pvideotitle
+        pvideotitle,
         uploader
     }
-    res 
+    res
     {
-      thumbnail
+      thumbnail,
       keyword
     }
 */
@@ -36,12 +34,12 @@ exports.video = async (req, res, next) => {
   var videofile = req.file.videofile;
   var inbucket = req.body.inbucket;
   var pvideotitle = req.body.pvideotitle;
-  var uploader = req.body.uploader; // 게시자
+  var uploader = req.body.uploader;
 
   //console.log(videofile);
-  console.log(inbucket);
-  console.log(pvideotitle);
-  console.log(uploader);
+  console.log("inbucket : " + inbucket);
+  console.log("pvideotitle : " + pvideotitle);
+  console.log("uploader : " + uploader);
 
   let file = req.file;
 
@@ -57,7 +55,7 @@ exports.video = async (req, res, next) => {
       "./upload/" + pvideotitle + ".mp4",
       function (err) {
         if (err) throw err;
-        console.log("File Renamed");
+        return pvideotitle + ".mp4";
       }
     );
   }
@@ -68,15 +66,15 @@ exports.video = async (req, res, next) => {
 
   // 1. 썸네일 제작, 제작된 썸네일 이름 : tn
   // 썸네일 제작 시, 영상의 20%를 가져와서 만든다.
-  function thumbFunc() {
-    ffmpeg("upload/" + pvideotitle + ".mp4").screenshots({
+  async function thumbFunc(rename) {
+    var process = new ffmpeg("upload/" + rename);
+    process.screenshots({
       // 썸네일 제작 시, 영상의 20%를 가져와서 만든다.
       count: 1,
       filename: pvideotitle + ".png",
       folder: "upload/",
       size: "800x480",
     });
-    console.log("1. 썸네일 제작 완료");
   }
 
   // 썸네일 제작 함수 불러오기
@@ -93,13 +91,13 @@ exports.video = async (req, res, next) => {
   var vl; // 동영상 링크
   var tl; // 썸네일 링크
 
-  function uploadS3(s3) {
+  async function uploadS3(s3, filename) {
     // s3 썸네일 업로드
     const thumbnailload = {
       Bucket: "wordballoon",
-      Key: inbucket + "/" + pvideotitle + ".png",
+      Key: inbucket + "/" + filename,
       ACL: "public-read",
-      Body: fs.createReadStream("./upload/" + pvideotitle + ".png"),
+      Body: fs.createReadStream("./upload/" + filename),
       ContentType: "image/png",
     };
 
@@ -119,7 +117,14 @@ exports.video = async (req, res, next) => {
       console.log("thumbnail upload complete");
       console.log("data: ", data);
       tl = data.Location;
-    });
+    })
+      .then((result) => {
+        console.log("1. 썸네일 업로드 완료");
+      })
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
 
     // s3에 동영상 업로드
     s3.upload(videoupload, function (err, data) {
@@ -129,16 +134,23 @@ exports.video = async (req, res, next) => {
       console.log("video upload complete");
       console.log("data: ", data);
       vl = data.Location;
-    });
-
-    console.log("2. 썸네일, 영상 업로드 완료");
+    })
+      .then((result) => {
+        console.log("2. 동영상 업로드 완료");
+        return "s3 finish";
+      })
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
   }
   // 업로드 함수
   //uploadS3(s3);
 
   // stt s3 업로드 준비
-  function sttFunc() {
+  async function sttFunc(s3result) {
     // 3. 파이썬 STT연결 --> S3 업로드
+    s3result = s3result;
     var options = {
       mode: "text",
       pythonPath: "",
@@ -150,15 +162,23 @@ exports.video = async (req, res, next) => {
     PythonShell.run("translatevideo.py", options, function (err, results) {
       if (err) console.log("err msg : ", err);
       console.log("stt 전송 finished: %j", results);
-    });
-    console.log("3. stt 완료");
+    })
+      .then((result) => {
+        console.log("3. stt 완료");
+        return "stt done";
+      })
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
   }
 
   //sttFunc();
 
   // 4. TextRank
 
-  function trFunc(pvideotitle) {
+  async function trFunc(pvideotitle, sttresult) {
+    sttresult = sttresult;
     var csv_filename = pvideotitle + ".csv";
 
     var options = {
@@ -166,7 +186,7 @@ exports.video = async (req, res, next) => {
       pythonPath: "",
       pythonOptions: ["-u"],
       scriptPath: "../server/stt/Text_Rank",
-      args: csv_filename, // pvideotitle_sentence.csv
+      args: csv_filename, // pvideotitle.csv
     };
     console.log("전달한 파일 이름" + csv_filename);
 
@@ -263,12 +283,8 @@ exports.video = async (req, res, next) => {
           console.log("err msg : ", err);
         }
         console.log("result: " + results);
-        //keyword = result;
-
-        // 한글 깨짐 방지 위해 utf-8디코딩
+        keyword = result;
         keyword = results.join("/");
-        keyword = iconv.encode(keyword, "utf-8").toString();
-        console.log("인코딩후" + keyword);
 
         //db 접근
         //videoid
@@ -356,11 +372,17 @@ exports.video = async (req, res, next) => {
     count = c;
   });
 
-  setTimeout(rename, 2000, result);
-  setTimeout(thumbFunc, 4000);
-  setTimeout(uploadS3, 10000, s3);
-  setTimeout(sttFunc, 20000);
-  setTimeout(trFunc, 90000, pvideotitle);
+  // setTimeout(rename, 2000, result);
+  // setTimeout(thumbFunc, 4000);
+  // setTimeout(uploadS3, 10000, s3);
+  // setTimeout(sttFunc, 20000);
+  // setTimeout(trFunc, 90000, pvideotitle);
+
+  const rename2 = await rename(result);
+  const filename = await thumbFunc(rename2);
+  const s3result = await uploadS3(s3, filename);
+  const sttresult = await sttFunc(s3result);
+  await trFunc(pvideotitle, sttresult);
 
   // 5. TextRank 값, STT Script 링크, 영상 링크, 썸네일 링크 데이터베이스에 저장
 
