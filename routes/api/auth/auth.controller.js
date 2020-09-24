@@ -173,3 +173,6 @@ exports.logout = async (req, res) => {
   });
   //res.redirect("/");
 };
+
+// 정보변경 페이지
+exports.update = async (req, res) => {};

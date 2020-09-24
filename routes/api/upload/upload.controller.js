@@ -14,10 +14,17 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 // 업로드 기능
 /*
     POST /api/upload/
+    req 
     {
         videofile,
         inbucket : "ko-kr", "en-us",
         pvideotitle
+        uploader
+    }
+    res 
+    {
+      thumbnail
+      keyword
     }
 */
 
@@ -29,10 +36,12 @@ exports.video = async (req, res, next) => {
   var videofile = req.file.videofile;
   var inbucket = req.body.inbucket;
   var pvideotitle = req.body.pvideotitle;
+  var uploader = req.body.uploader; // 게시자
 
   //console.log(videofile);
   console.log(inbucket);
   console.log(pvideotitle);
+  console.log(uploader);
 
   let file = req.file;
 
@@ -150,7 +159,7 @@ exports.video = async (req, res, next) => {
   // 4. TextRank
 
   function trFunc(pvideotitle) {
-    var csv_filename = pvideotitle + "_sentence.csv";
+    var csv_filename = pvideotitle + ".csv";
 
     var options = {
       mode: "text",
@@ -221,6 +230,7 @@ exports.video = async (req, res, next) => {
           videolike: videolike,
           convertflag: convertflag,
           keyword: keyword,
+          uploader: uploader,
         }).then((result) => {
           if (!result) {
             console.log("db 저장 실패");
@@ -309,6 +319,7 @@ exports.video = async (req, res, next) => {
           videolike: videolike,
           convertflag: convertflag,
           keyword: keyword,
+          uploader: uploader,
         }).then((result) => {
           if (!result) {
             console.log("db 저장 실패");
