@@ -49,16 +49,14 @@ exports.video = async (req, res, next) => {
     size: file.size,
   };
 
-  function rename(result) {
-    fs.rename(
-      "./upload/" + result.originalName,
-      "./upload/" + pvideotitle + ".mp4",
-      function (err) {
-        if (err) throw err;
-        return pvideotitle + ".mp4";
-      }
-    );
-  }
+  const rename = fs.rename(
+    "./upload/" + result.originalName,
+    "./upload/" + pvideotitle + ".mp4",
+    function (err) {
+      if (err) throw err;
+      return pvideotitle + ".mp4";
+    }
+  );
 
   console.log(file);
 
@@ -67,13 +65,11 @@ exports.video = async (req, res, next) => {
   // 1. 썸네일 제작, 제작된 썸네일 이름 : tn
   // 썸네일 제작 시, 영상의 20%를 가져와서 만든다.
   async function thumbFunc(rename) {
-    var process = new ffmpeg("upload/" + rename);
-    process.screenshots({
+    ffmpeg("upload/" + file.filename).screenshots({
       // 썸네일 제작 시, 영상의 20%를 가져와서 만든다.
       count: 1,
       filename: pvideotitle + ".png",
       folder: "upload/",
-      size: "800x480",
     });
   }
 
@@ -372,13 +368,13 @@ exports.video = async (req, res, next) => {
     count = c;
   });
 
-  // setTimeout(rename, 2000, result);
+  const rename2 = setTimeout(rename, 2000, result);
   // setTimeout(thumbFunc, 4000);
   // setTimeout(uploadS3, 10000, s3);
   // setTimeout(sttFunc, 20000);
   // setTimeout(trFunc, 90000, pvideotitle);
 
-  const rename2 = await rename(result);
+  //const rename2 = await rename(result);
   const filename = await thumbFunc(rename2);
   const s3result = await uploadS3(s3, filename);
   const sttresult = await sttFunc(s3result);
