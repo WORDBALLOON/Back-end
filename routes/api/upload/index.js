@@ -18,5 +18,7 @@ let storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 router.post("/video", upload.single("videofile"), controller.video);
+router.post("/stt", controller.stt);
+router.post("/textrank", controller.textrank);
 
 module.exports = router;
