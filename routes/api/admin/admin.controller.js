@@ -144,7 +144,7 @@ exports.change = async (req, res, next) => {
   //var csv=req.file.buffer.toString('utf8');
 
   // convertflag 값 1을 2로 변환
-  Pvideo.update(
+  await Pvideo.update(
     {
       convertflag: 2,
     },
@@ -152,7 +152,7 @@ exports.change = async (req, res, next) => {
       where: { videoid: videoid },
     }
   );
-  /*
+
   //s3에 올린 subtitle 파일 다운로드 받아서 upload 폴더에 저장
 
   async function downloadS3(s3, filename, videotitle, categoryname) {
@@ -191,7 +191,7 @@ exports.change = async (req, res, next) => {
       });
     console.log("1. downloadS3 완료(upload폴더에 csv, mp4)");
   }
-*/
+
   // 영상처리 파이썬 연결
   async function opencvFunc(videoname) {
     videoname = videoname;
@@ -225,7 +225,6 @@ exports.change = async (req, res, next) => {
       console.log("mp3 완료", results);
     });
 
-    /*
     // 2. mp3+mp4 합체해서 파일 저장
     var options3 = {
       mode: "text",
@@ -289,11 +288,10 @@ exports.change = async (req, res, next) => {
   opencvFunc(videoname); //opencv, mp3, mp4
   uploadVideo(videotitle, categoryname); //동영상 업로드
   sendFunc();
-  */
-  }
+};
 
-  // 관리자 페이지4 기능: confirm
-  /*
+// 관리자 페이지4 기능: confirm
+/*
   GET /api/confirm/$videoid
   {
       videoid
@@ -303,8 +301,6 @@ exports.change = async (req, res, next) => {
       videolink
   }
 */
-  opencvFunc(videoname);
-};
 
 exports.confirm = async (req, res, next) => {
   var videoid = req.params.videoid;

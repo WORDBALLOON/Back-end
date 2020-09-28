@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production pm2 start app.js",
-    "dev": "nodemon app.js"
+    "start": "cross-env NODE_ENV=production nodemon start app.js",
+    "dev": "nodemon app.js",
+    "start:production": "NODE_ENV=production nodemon app.js"
   },
   "dependencies": {
     "aws-sdk": "^2.748.0",

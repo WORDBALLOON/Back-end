@@ -16,8 +16,8 @@ const app = express();
 // process.env.NODE_ENV는 배포환경인지 개벌환경인지 판단
 if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined")); // 배포환경
-  app.use(helmet());
-  app.use(hpp());
+  //app.use(helmet());
+  //app.use(hpp());
 } else {
   app.use(morgan("dev")); // 개발환경
 }

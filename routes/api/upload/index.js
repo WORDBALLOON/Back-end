@@ -20,5 +20,6 @@ var upload = multer({ storage: storage });
 router.post("/video", upload.single("videofile"), controller.video);
 router.post("/stt", controller.stt);
 router.post("/textrank", controller.textrank);
+router.post("/submit", controller.submit);
 
 module.exports = router;

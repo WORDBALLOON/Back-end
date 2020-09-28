@@ -7,3 +7,5 @@ config/*.json
 .env
 
 upload/
+
+.env.development

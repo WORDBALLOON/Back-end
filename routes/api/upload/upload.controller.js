@@ -10,7 +10,7 @@ var iconv = require("iconv-lite"); //한글 깨짐 npm insatll iconv-lite
 
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 
-// 업로드 기능 : 썸네일, s3 업로드
+// 1. 업로드 기능 : 썸네일, s3 업로드
 /*
     POST /api/upload/video
     req
@@ -282,19 +282,19 @@ exports.textrank = async (req, res, next) => {
         uploader: uploader,
       }).then((result) => {
         if (!result) {
-          console.log("db 저장 실패");
+          console.log("textrank 실패");
           res.json({
             status: 500,
             success: false,
-            message: "db 저장 실패",
+            message: "textrank 실패",
           });
           return;
         } else {
-          console.log("db 저장 성공");
+          console.log("textrank 성공");
           res.json({
             status: 200,
             success: true,
-            message: "db 저장 성공",
+            message: "textrank 성공",
             keyword: keyword,
           });
           return;
@@ -372,19 +372,19 @@ exports.textrank = async (req, res, next) => {
         uploader: uploader,
       }).then((result) => {
         if (!result) {
-          console.log("db 저장 실패");
+          console.log("textrank 실패");
           res.json({
             status: 500,
             success: false,
-            message: "db 저장 실패",
+            message: "textrank 실패",
           });
           return;
         } else {
-          console.log("db 저장 성공");
+          console.log("textrank 성공");
           res.json({
             status: 200,
             success: true,
-            message: "db 저장 성공",
+            message: "textrank 성공",
             keyword: keyword,
           });
           return;
@@ -403,4 +403,59 @@ exports.textrank = async (req, res, next) => {
     console.log("count: " + c);
     count = c;
   });
+};
+
+// 4. 업로드 기능 : submit 기능
+/*
+    POST /api/upload/video
+    req
+    {
+        keyword,
+        inbucket : "ko-kr", "en-us",
+        pvideotitle,
+        uploader
+    }
+    res
+    {
+      message : db 저장이 완료됐습니다.
+    }
+*/
+
+exports.submit = async (req, res, next) => {
+  var pvideotitle = req.body.pvideotitle;
+  var uploader = req.body.uploader;
+  var keyword = req.body.keyword;
+
+  const vid = await Pvideo.findOne({
+    attributes: ["videoid"],
+    where: {
+      videotitle: pvideotitle,
+      uploader: uploader,
+    },
+  })
+    .then((result) => {
+      return result.dataValues.videoid;
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+
+  console.log(vid);
+
+  await Pvideo.update(
+    {
+      keyword: keyword,
+    },
+    {
+      where: { videoid: vid },
+    }
+  )
+    .then((result) => {
+      res.send("db 저장이 완료됐습니다.");
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
