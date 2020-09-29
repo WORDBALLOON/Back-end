@@ -28,7 +28,7 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 */
 
 exports.title = async (req, res, next) => {
-  var searchword = req.body.word;
+  var searchword = req.body.searchword;
 
   await Pvideo.findAll({
     attributes: ["videotitle", "videolink", "thumbnail", "videoid"],
