@@ -31,7 +31,7 @@ exports.video = async (req, res, next) => {
   // submit 시, enctype="multipart/form-data"
 
   // video 로컬에 저장
-  var videofile = req.file.videofile;
+  //var videofile = req.file.videofile;
   var inbucket = req.body.inbucket;
   var pvideotitle = req.body.pvideotitle;
   var uploader = req.body.uploader;
@@ -158,8 +158,9 @@ exports.video = async (req, res, next) => {
 */
 
 exports.stt = async (req, res, next) => {
-  var inbucket = req.body.inbucket;
-  var pvideotitle = req.body.pvideotitle;
+  var inbucket = await req.body.inbucket;
+  var pvideotitle = await req.body.pvideotitle;
+  console.log(pvideotitle);
 
   // stt s3 업로드 준비
   // 3. 파이썬 STT연결 --> S3 업로드

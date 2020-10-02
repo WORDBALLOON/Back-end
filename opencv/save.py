@@ -6,9 +6,9 @@ import sys
 
 title = sys.argv[1]
 mp4_title = title+".mp4"
-mp3_title = title+"./mp3"
+mp3_title = title+".mp3"
 
-videoclip = VideoFileClip("./upload/"+mp4_title)
+videoclip = VideoFileClip("./upload/novoice("+title+").mp4")
 audioclip = AudioFileClip("./upload/"+mp3_title)
 
 videoclip.audio = audioclip

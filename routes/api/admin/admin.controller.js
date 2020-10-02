@@ -110,8 +110,8 @@ exports.edit = async (req, res, next) => {
 */
 
 exports.change = async (req, res, next) => {
-  var subtitle = req.body.subtitle;
-  var videoid = req.body.videoid;
+  var subtitle = await req.body.subtitle;
+  var videoid = await req.body.videoid;
 
   // 동영상 이름 찾기
   var videotitle = await Pvideo.findOne({
@@ -195,6 +195,7 @@ exports.change = async (req, res, next) => {
   // 영상처리 파이썬 연결
   async function opencvFunc(videoname) {
     videoname = videoname;
+    console.log("영상처리 파이썬부분 비디오 이름" + videoname);
     video = videoname + ".mp4";
     csv = videoname + ".csv";
     var options1 = {
@@ -204,9 +205,20 @@ exports.change = async (req, res, next) => {
       scriptPath: "../server/opencv",
       args: [video, csv],
     };
+    var options3 = {
+      mode: "text",
+      pythonPath: "",
+      pythonOptions: ["-u"],
+      scriptPath: "../server/opencv",
+      args: videoname,
+    };
 
-    await PythonShell.run("pil_final.py", options1, function (err, results) {
+    PythonShell.run("c_video_dlib3.py", options1, function (err, results) {
       if (err) console.log("err msg : ", err);
+      PythonShell.run("save.py", options3, function (err, results) {
+        if (err) console.log("err msg : ", err);
+        console.log("완성 파일 저장 완료", results);
+      });
       console.log("영상처리 완료", results);
     });
 
@@ -220,25 +232,10 @@ exports.change = async (req, res, next) => {
       args: videoname,
     };
 
-    await PythonShell.run("mp4_to_mp3.py", options2, function (err, results) {
+    PythonShell.run("mp4_to_mp3.py", options2, function (err, results) {
       if (err) console.log("err msg : ", err);
       console.log("mp3 완료", results);
     });
-
-    // 2. mp3+mp4 합체해서 파일 저장
-    var options3 = {
-      mode: "text",
-      pythonPath: "",
-      pythonOptions: ["-u"],
-      scriptPath: "../server/opencv",
-      args: videoname,
-    };
-
-    await PythonShell.run("save.py", options3, function (err, results) {
-      if (err) console.log("err msg : ", err);
-      console.log("완성 파일 저장 완료", results);
-    });
-    console.log("2. 영상처리 파이썬 연결)");
   }
 
   async function uploadVideo(videotitle, categoryname) {
@@ -284,10 +281,19 @@ exports.change = async (req, res, next) => {
     console.log("4. 전송 완료)");
   }
 
-  downloadS3(s3, filename, videotitle, categoryname); //csv, 동영상 다운로드
-  opencvFunc(videoname); //opencv, mp3, mp4
-  uploadVideo(videotitle, categoryname); //동영상 업로드
-  sendFunc();
+  //csv, 동영상 다운로드
+  downloadS3(s3, filename, videotitle, categoryname).then((result) => {
+    // opencv, mp3, mp4
+    opencvFunc(videoname).then((result) => {
+      console.log(result);
+      uploadVideo(videotitle, categoryname).then((result) => {
+        sendFunc();
+      });
+    });
+  });
+
+  //await ; //동영상 업로드
+  //await ;
 };
 
 // 관리자 페이지4 기능: confirm
