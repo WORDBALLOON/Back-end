@@ -13,3 +13,5 @@ audioclip = AudioFileClip("./upload/"+mp3_title)
 
 videoclip.audio = audioclip
 videoclip.write_videofile("./upload/"+mp4_title)
+
+print(mp4_title)

@@ -9,3 +9,5 @@ config/*.json
 upload/
 
 .env.development
+
+ecosystem.config.js

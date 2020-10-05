@@ -110,6 +110,7 @@ exports.edit = async (req, res, next) => {
 */
 
 exports.change = async (req, res, next) => {
+  req.connection.setTimeout(60 * 15 * 1000); // set timeout 3 min.
   var subtitle = await req.body.subtitle;
   var videoid = await req.body.videoid;
 
@@ -187,7 +188,7 @@ exports.change = async (req, res, next) => {
         console.error("File Stream:", err);
       })
       .on("close", function () {
-        console.log("Done.");
+        console.log("동영상 받아오기 Done.");
       });
     console.log("1. downloadS3 완료(upload폴더에 csv, mp4)");
   }
@@ -215,13 +216,17 @@ exports.change = async (req, res, next) => {
 
     PythonShell.run("c_video_dlib3.py", options1, function (err, results) {
       if (err) console.log("err msg : ", err);
-      PythonShell.run("save.py", options3, function (err, results) {
+      PythonShell.run("save.py", options3, function (err, results3) {
         if (err) console.log("err msg : ", err);
-        console.log("완성 파일 저장 완료", results);
+        console.log("완성 파일 저장 완료", results3);
+        //const new_category=await categoryname;
+        uploadVideo(results3, videotitle, categoryname).then((result) => {
+          console.log(result);
+          sendFunc();
+        });
+        console.log("영상처리 완료", results);
       });
-      console.log("영상처리 완료", results);
     });
-
     // mp3 추출, m03+mp4 합체, 파일 저장(로컬)
     // 1. mp3 추출
     var options2 = {
@@ -238,7 +243,8 @@ exports.change = async (req, res, next) => {
     });
   }
 
-  async function uploadVideo(videotitle, categoryname) {
+  async function uploadVideo(result3, videotitle, categoryname) {
+    result3 = result3;
     // 영상 처리 후 s3 저장
     const videoupload = {
       Bucket: "wordballoon",
@@ -272,6 +278,7 @@ exports.change = async (req, res, next) => {
       }
     )
       .then((result) => {
+        console.log("success");
         res.status(200).send("Success");
       })
       .catch((err) => {
@@ -286,14 +293,11 @@ exports.change = async (req, res, next) => {
     // opencv, mp3, mp4
     opencvFunc(videoname).then((result) => {
       console.log(result);
-      uploadVideo(videotitle, categoryname).then((result) => {
-        sendFunc();
-      });
+      //next();
+      //uploadVideo(videotitle, categoryname).then((result) => {
+      //sendFunc();
     });
   });
-
-  //await ; //동영상 업로드
-  //await ;
 };
 
 // 관리자 페이지4 기능: confirm

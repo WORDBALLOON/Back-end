@@ -175,4 +175,81 @@ exports.logout = async (req, res) => {
 };
 
 // 정보변경 페이지
-exports.update = async (req, res) => {};
+exports.update = async (req, res) => {
+  var userid = req.body.userid;
+  var password = req.body.password; // 확인할 때에는 바꾸지 전 passoword 주고, 확인 후에는 바꿀 password 준다.
+  var name = req.body.name;
+  var birth = req.body.birth;
+
+  console.log("id" + userid);
+  console.log("password" + password);
+  // 비밀번호 hash 화
+  //const hash = await bcrypt.hash(password, 12);
+  //console.log("password" + hash);
+
+  // 맞는 password인지 확인
+  if (name == "") {
+    const many = await User.findOne({ where: { userid } });
+    if (many) {
+      const result = await bcrypt.compare(password, many.password);
+      if (result) {
+        res.json({
+          status: 202,
+          success: true,
+          message: "비밀번호가 일치합니다. 바꿀 정보를 입력해주세요",
+        });
+        //return res.redirect("/register");}
+        return;
+      } else {
+        res.json({
+          status: 201,
+          success: false,
+          message: "비밀번호를 다시 입력해주세요",
+        });
+        return;
+      }
+    }
+  } else {
+    try {
+      const exUser = await User.findOne({ where: { userid } });
+      //console.log(exUser);
+
+      const hash2 = await bcrypt.hash(password, 12);
+
+      await User.update(
+        {
+          password: hash2,
+          name: name,
+          birth: birth,
+        },
+        {
+          where: { userid: userid },
+        }
+      ).then((result) => {
+        if (!result) {
+          console.log("수정 실패");
+          res.json({
+            status: 500,
+            success: false,
+            message: "수정실패",
+          });
+          return;
+        } else {
+          console.log("수정 성공");
+          res.json({
+            status: 200,
+            success: true,
+            message: "수정 성공",
+          });
+          return;
+          // 전달해야할 것이 있을 때에는
+          //console.log(result.dataValues);
+        }
+      });
+      return res.redirect("/");
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }
+};
