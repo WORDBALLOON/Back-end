@@ -23,7 +23,9 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
       videoid,
       videotitle,
       videolink,
-      thumbnail
+      thumbnail,
+      view,
+      uploader
   }
 */
 
@@ -31,7 +33,14 @@ exports.title = async (req, res, next) => {
   var searchword = req.body.searchword;
 
   await Pvideo.findAll({
-    attributes: ["videotitle", "videolink", "thumbnail", "videoid"],
+    attributes: [
+      "videotitle",
+      "videolink",
+      "thumbnail",
+      "videoid",
+      "view",
+      "uploader",
+    ],
     where: {
       [Op.or]: [
         {
@@ -48,10 +57,17 @@ exports.title = async (req, res, next) => {
     },
   })
     .then((result) => {
-      res.json(result);
+      if (result == "[]") {
+        res.json(searchword + "와 관련된 영상이 없습니다.");
+
+        console.log(result);
+      } else {
+        res.json(result);
+      }
     })
     .catch((err) => {
       console.log(err);
+
       next(err);
     });
 };

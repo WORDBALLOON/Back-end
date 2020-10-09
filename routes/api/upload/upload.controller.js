@@ -150,6 +150,7 @@ exports.video = async (req, res, next) => {
     {
         inbucket : "ko-kr", "en-us",
         pvideotitle
+        uploader
     }
     res
     {
@@ -160,6 +161,7 @@ exports.video = async (req, res, next) => {
 exports.stt = async (req, res, next) => {
   var inbucket = await req.body.inbucket;
   var pvideotitle = await req.body.pvideotitle;
+  var uploader = await req.body.uploader;
   console.log(pvideotitle);
 
   // stt s3 업로드 준비
@@ -203,6 +205,7 @@ exports.textrank = async (req, res, next) => {
   var inbucket = req.body.inbucket;
   var pvideotitle = req.body.pvideotitle;
   var uploader = req.body.uploader;
+
   var csv_filename = pvideotitle + ".csv";
 
   var options = {

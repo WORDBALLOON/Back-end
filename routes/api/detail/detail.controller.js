@@ -77,6 +77,7 @@ exports.view = async (req, res, next) => {
           "view",
           "videolike",
           "keyword",
+          "uploader",
         ],
         where: {
           videoid: videoid,
