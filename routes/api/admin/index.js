@@ -34,7 +34,7 @@ let storage = multer.diskStorage({
   },
 });
 
-router.post("/list", controller.list);
+router.get("/list", controller.list);
 
 router.get("/edit/:videoid", controller.edit);
 

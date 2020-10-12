@@ -13,7 +13,7 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 
 // 1. 조회수 탑
 /*
-    POST /api/main/viewtop
+   GET /api/main/viewtop
     res
     {
         videoid

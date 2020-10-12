@@ -20,7 +20,7 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 
 // 관리자 페이지1 기능: list --> convertflag = 0 인 영상 불러오기
 /*
-  POST /api/list/
+  GET/api/admin/list/
   res
   {
       videoid,
@@ -68,7 +68,7 @@ exports.edit = async (req, res, next) => {
 
   console.log("videoid : " + videoid);
 
-  Pvideo.Update(
+  Pvideo.update(
     {
       convertflag: 1,
     },
@@ -78,7 +78,7 @@ exports.edit = async (req, res, next) => {
   );
 
   Pvideo.findAll({
-    attributes: ["videotitle", "videolink", "subtitle"],
+    attributes: ["videotitle", "videolink", "subtitle", "uploader"],
     where: {
       videoid: videoid,
     },
@@ -94,7 +94,7 @@ exports.edit = async (req, res, next) => {
 
 // 관리자 페이지3 기능: change
 /*
-  POST /api/change
+  POST /api/admin/change
   req
   {
       videoid,
@@ -279,7 +279,7 @@ exports.change = async (req, res, next) => {
     )
       .then((result) => {
         console.log("success");
-        res.status(200).send("Success");
+        res.status(200).send("변환 완료");
       })
       .catch((err) => {
         console.log(err);
@@ -316,7 +316,7 @@ exports.confirm = async (req, res, next) => {
   var videoid = req.params.videoid;
 
   Pvideo.findOne({
-    attributes: ["videotitle", "videolink"],
+    attributes: ["videotitle", "videolink", "uploader"],
     where: {
       videoid: videoid,
     },

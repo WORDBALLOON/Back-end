@@ -411,11 +411,10 @@ exports.textrank = async (req, res, next) => {
 
 // 4. 업로드 기능 : submit 기능
 /*
-    POST /api/upload/video
+    POST /api/upload/submit
     req
     {
         keyword,
-        inbucket : "ko-kr", "en-us",
         pvideotitle,
         uploader
     }

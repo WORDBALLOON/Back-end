@@ -13,7 +13,7 @@ require("dotenv").config({ path: __dirname + "\\" + ".env" });
 
 // 1. 워드클라우드
 /*
-    POST /api/wordcloud/
+    POST /api/mypage/wordcloud/
     req
     {
         userid
@@ -99,7 +99,7 @@ exports.wordcloud = async (req, res, next) => {
 
 // 2. 업로드한 영상
 /*
-    POST /api/uploader/
+    POST /api/mypage/uploader/
     req
     {
         userid
@@ -116,7 +116,14 @@ exports.uploader = async (req, res, next) => {
   var userid = req.body.userid;
 
   await Pvideo.findAll({
-    attributes: ["videolink", "videotitle", "categoryname"],
+    attributes: [
+      "videolink",
+      "videotitle",
+      "categoryname",
+      "thumbnail",
+      "view",
+      "videolike",
+    ],
     where: {
       uploader: userid,
     },
