@@ -39,12 +39,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // front와 server 사이의 문제 야기 방지
-app.use(cors());
-/*
+// app.use(cors());
+
 var corsOptions = {
   origin: "http://localhost:3000",
+  credentials: true,
 };
-*/
+
+app.use(cors(corsOptions));
+
 // use database with sequelize
 sequelize.sync();
 passportConfig(passport);

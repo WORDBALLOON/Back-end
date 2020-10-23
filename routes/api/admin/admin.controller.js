@@ -77,7 +77,7 @@ exports.edit = async (req, res, next) => {
     }
   );
 
-  Pvideo.findAll({
+  Pvideo.findOne({
     attributes: ["videotitle", "videolink", "subtitle", "uploader"],
     where: {
       videoid: videoid,
