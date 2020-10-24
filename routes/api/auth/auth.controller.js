@@ -188,7 +188,7 @@ exports.update = async (req, res) => {
   //console.log("password" + hash);
 
   // 맞는 password인지 확인
-  if (name == "") {
+  if (name == "0") {
     const many = await User.findOne({ where: { userid } });
     if (many) {
       const result = await bcrypt.compare(password, many.password);
