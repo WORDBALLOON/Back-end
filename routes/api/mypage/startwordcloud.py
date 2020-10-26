@@ -2,12 +2,13 @@
 import sys
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
+import base64
+
 # %matplotlib inline
 
 words = sys.argv[1]
 words.replace(",", "/")
 wordlist = words.split('/')
-
 
 def displayWordCloud(data=None, backgroundcolor='white', width=800, height=600):
     wordcloud = WordCloud(stopwords=STOPWORDS,
@@ -16,7 +17,6 @@ def displayWordCloud(data=None, backgroundcolor='white', width=800, height=600):
     plt.figure(figsize=(15, 10))
     plt.imshow(wordcloud)
     plt.axis("off")
-    # plt.show()
     wordcloud.to_file('./upload/wordcloud.jpg')
 
 
